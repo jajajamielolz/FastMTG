@@ -1,8 +1,8 @@
 from fastapi import Depends
 
 from app.auth import JWTBearer
-from app.middlewares.client_variables import get_request_variables
 from app.auth import requires_auth
+from app.middlewares.client_variables import get_request_variables
 
 
 def RequiredAuthDependencies():  # noqa
@@ -13,6 +13,7 @@ def RequiredAuthDependencies():  # noqa
     ]
 
     return dependency_list
+
 
 def NoRequiredAuthDependencies():  # noqa
     dependency_list = [

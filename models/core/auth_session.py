@@ -4,9 +4,7 @@ from sqlalchemy.orm.session import Session
 
 
 class AuthSession(Session):
-    def __init__(
-        self, user_uid=None, update_override=False, **kwargs
-    ):
+    def __init__(self, user_uid=None, update_override=False, **kwargs):
         super(AuthSession, self).__init__(**kwargs)
         self._verifying_delete = False
         self.update_override = update_override

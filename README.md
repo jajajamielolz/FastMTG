@@ -1,24 +1,39 @@
 # Fast_Blocksci
 Fast API app to query mtg stuff
 
+### Swagger 
+for interactive swagger docs go to http://localhost:8000/docs
+
+
+### Formatting
+flake8, black, and reorder python imports are used for formatting, set up pre-commit hooks with `./venv/bin/pre-commit install`
+and run reformatting with `./venv/bin/pre-commit run --all-files`
+
+### Alembic & SQLite3
+This repo is using alembic to handle schema migrations and using SQLite3 for a database. To initialize your local db run `alembic upgrade head`
+
+Once any model files are added, auto generate a migration script with `alembic revision --autogenerate -m "<short revision description>"`
+
+## Testing
+The testing environment is automatically configured with the `.env.testing` file (see `app/config.py` for more information). Since these are testing credentials, we can keep in plain text and checked into the repository.
+
+To run the entire test suite, just run `pytest`!
+```
+pytest
+```
 
 
 
+### Global Fixtures and Writing Tests
+There are a number of useful pytest fixtures defined in `app/conftest.py`.
 
-### Adminer
-We use [`Adminer`](https://www.adminer.org) as our database admin server. 
-It's useful for debugging issues during production and development.
-Just run `docker-compose` to start the server in the background.
+**client**: This fixture returns a fast test client
 
 ```
-docker-compose up -d --build
+client.get("example/route/")
 ```
 
-> The "--build" command forces the "adminer/Dockerfile" to rebuild.
+**test_db**: This fixture gives access to a temporary sql database that can be connected to in the same way as a 
+standard database.
 
-Now you can go to [http://localhost:8080](http://localhost:8080) and enter the following settings:
-
-System: `SQLite 3`  
-Username: `` (leave empty)
-Password: `<PASSWORD>` (Grab the `Adminer Password` from 1password)  
-Database: `/db/app.db` (we mount the "db" folder to `/app`)
+**tempdir**: A temporary directory that is reset for each test function.

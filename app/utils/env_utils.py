@@ -7,8 +7,8 @@ import dotenv
 
 def load_environment(env: str = None, root: str = None):
     """
-    :param env: The environment. For example, "production", "staging" and "development".
-    :param root: The folder to load the .env files. Defaults to current working directory,.
+    :param env: The environment. For example, "production", "staging" and "development". # noqa
+    :param root: The folder to load the .env files. Defaults to current working directory,. # noqa
     """
     if not env and "pytest" in sys.modules:
         env = "testing"

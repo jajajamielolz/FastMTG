@@ -28,9 +28,7 @@ class FastMTGDB(object):
         self.engine = create_engine(db_conn)
         self._mtg_db = None
 
-    def get_mtg_db(
-        self, user: str = None, update_override=False
-    ) -> AuthSession:
+    def get_mtg_db(self, user: str = None, update_override=False) -> AuthSession:
         return self.session_maker(
             bind=self.engine, user_uid=user, update_override=update_override
         )

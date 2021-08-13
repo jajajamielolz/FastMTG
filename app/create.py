@@ -38,7 +38,6 @@ def create_app():
     # uncomment to add profiler
     # app.add_middleware(PyInstrumentProfilerMiddleware)
 
-
     start_time = time.time()
 
     def get_uptime():
@@ -48,7 +47,6 @@ def create_app():
 
     # environment.add_section("app uptime", get_uptime)
     # end of healthcheck
-
 
     from app.api import deck_builder
     from app.api import search

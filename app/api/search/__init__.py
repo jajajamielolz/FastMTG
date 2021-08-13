@@ -1,27 +1,22 @@
-from fastapi import APIRouter
-from fastapi import Request
-from app.base import RequiredAuthDependencies
-from app.base import NoRequiredAuthDependencies
 from typing import Optional
-from pydantic import BaseModel
-from typing import List
+
+from fastapi import APIRouter
 from mtgsdk import Card
-from app.utils.abilities import ABILITIES
-from mtgsdk import Set
-from mtgsdk import Type
-from mtgsdk import Supertype
-from mtgsdk import Subtype
-from mtgsdk import Changelog
-from operator import itemgetter
-from app.api.deck_builder.utils import get_creatures
+
 from app.api.deck_builder.utils import card_to_dict
+from app.base import NoRequiredAuthDependencies
 
 
 router = APIRouter()
 
 
 @router.get("/find-card", dependencies=NoRequiredAuthDependencies())
-def find_card(name: Optional[str] = None, artist: Optional[str] = None, manaCost: Optional[int] = None, power: Optional[int] = None): # noqa!
+def find_card(
+    name: Optional[str] = None,
+    artist: Optional[str] = None,
+    manaCost: Optional[int] = None,
+    power: Optional[int] = None,
+):  # noqa!
     card_dict = {}
     if name:
         card_dict["name"] = name
@@ -37,4 +32,3 @@ def find_card(name: Optional[str] = None, artist: Optional[str] = None, manaCost
     response = [card_to_dict(card) for card in cards]
 
     return {"status": "success", "result": response}
-

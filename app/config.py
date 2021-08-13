@@ -18,4 +18,3 @@ def get(key: str) -> str:
 ROOT = os.path.dirname(os.path.dirname(__file__))
 
 DB_FILE = os.path.join(ROOT, get("DB_FILE"))
-

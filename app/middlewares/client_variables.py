@@ -7,7 +7,9 @@ from starlette_context import context
 def get_request_variables(request: Request):
     try:
         if not hasattr(request.state, "no_purpose"):
-            request.state.no_purpose = "update later with global non-user based stuff if required"
+            request.state.no_purpose = (
+                "update later with global non-user based stuff if required"
+            )
 
             # update the context to include the request state
         if not hasattr(context, "state"):

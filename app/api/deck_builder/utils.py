@@ -1,23 +1,18 @@
-from fastapi import APIRouter
-from fastapi import Request
-from app.base import RequiredAuthDependencies
-from app.base import NoRequiredAuthDependencies
-from typing import Optional
-from pydantic import BaseModel
-from typing import List
 from mtgsdk import Card
-from app.utils.abilities import ABILITIES
-from mtgsdk import Set
-from mtgsdk import Type
-from mtgsdk import Supertype
-from mtgsdk import Subtype
-from mtgsdk import Changelog
-from operator import itemgetter
+
 
 rarities = ["mythic", "rare", "uncommon", "common"]
 
 
-def get_spells(spell_type, subtypes, num_cards, abilities, deck_list=None, color_identity=None, land_set="LRW"):
+def get_spells(
+    spell_type,
+    subtypes,
+    num_cards,
+    abilities,
+    deck_list=None,
+    color_identity=None,
+    land_set="LRW",
+):
     card_names = []
     # in order of rarity
     for rarity in rarities:
@@ -31,9 +26,13 @@ def get_spells(spell_type, subtypes, num_cards, abilities, deck_list=None, color
             for subtype in subtypes:
                 if num_cards == 0:
                     break
-                cards = Card.where(types=spell_type, colorIdentity=color, rarity=rarity, text=subtype).all()
+                cards = Card.where(
+                    types=spell_type, colorIdentity=color, rarity=rarity, text=subtype
+                ).all()
                 for card in cards:
-                    deck_list, num_cards = check_and_add_card(card, color_identity, deck_list, num_cards, card_names)
+                    deck_list, num_cards = check_and_add_card(
+                        card, color_identity, deck_list, num_cards, card_names
+                    )
                     if num_cards == 0:
                         break
 
@@ -45,9 +44,13 @@ def get_spells(spell_type, subtypes, num_cards, abilities, deck_list=None, color
             for ability in abilities:
                 if num_cards == 0:
                     break
-                cards = Card.where(types=spell_type, colorIdentity=color, rarity=rarity, text=ability).all()
+                cards = Card.where(
+                    types=spell_type, colorIdentity=color, rarity=rarity, text=ability
+                ).all()
                 for card in cards:
-                    deck_list, num_cards = check_and_add_card(card, color_identity, deck_list, num_cards, card_names)
+                    deck_list, num_cards = check_and_add_card(
+                        card, color_identity, deck_list, num_cards, card_names
+                    )
                     if num_cards == 0:
                         break
                 if num_cards == 0:
@@ -58,7 +61,9 @@ def get_spells(spell_type, subtypes, num_cards, abilities, deck_list=None, color
     return deck_list
 
 
-def get_creatures(subtypes, num_creatures, abilities, deck_list=None, color_identity=None):
+def get_creatures(
+    subtypes, num_creatures, abilities, deck_list=None, color_identity=None
+):
     deck_list_names = [creature.name for creature in deck_list]
     # get creatures
     if deck_list is None:
@@ -71,13 +76,17 @@ def get_creatures(subtypes, num_creatures, abilities, deck_list=None, color_iden
         for color in color_identity:
             if num_creatures == 0:
                 break
-            creatures = Card.where(subtypes=sub_type, types="Creature", colorIdentity=color).all()
+            creatures = Card.where(
+                subtypes=sub_type, types="Creature", colorIdentity=color
+            ).all()
             # cherry pick ones with similar abilities
             for creature in creatures:
                 if num_creatures == 0:
                     break
                 # only consider if the card isn't in the list and meets color identity restriction
-                if creature.name not in deck_list_names and (all(x in color_identity for x in creature.color_identity)):
+                if creature.name not in deck_list_names and (
+                    all(x in color_identity for x in creature.color_identity)
+                ):
                     for ability in abilities:
                         if creature.text:
                             if ability in creature.text:
@@ -92,13 +101,22 @@ def get_creatures(subtypes, num_creatures, abilities, deck_list=None, color_iden
             for sub_type in subtypes:
                 if num_creatures != 0:
                     for color in color_identity:
-                        creatures = Card.where(subtypes=sub_type, types="Creature", colorIdentity=color, rarity=rarity).all()
+                        creatures = Card.where(
+                            subtypes=sub_type,
+                            types="Creature",
+                            colorIdentity=color,
+                            rarity=rarity,
+                        ).all()
                         # cherry pick ones with similar abilities
                         for creature in creatures:
                             if num_creatures == 0:
                                 break
                             # only consider if the card isn't in the list and meets color identity restriction
-                            if creature.name not in deck_list_names and (all(x in color_identity for x in creature.color_identity)):
+                            if creature.name not in deck_list_names and (
+                                all(
+                                    x in color_identity for x in creature.color_identity
+                                )
+                            ):
                                 deck_list.append(creature)
                                 deck_list_names.append(creature.name)
                                 num_creatures -= 1
@@ -118,7 +136,9 @@ def card_to_dict(card):
 
 
 def check_and_add_card(card, color_identity, deck_list, num_cards, card_names):
-    if card.name not in card_names and (all(c in color_identity for c in card.color_identity)):
+    if card.name not in card_names and (
+        all(c in color_identity for c in card.color_identity)
+    ):
         deck_list.append(card)
         card_names.append(card.name)
         num_cards -= 1
@@ -134,7 +154,9 @@ def top_up_basics(num_cards, color_identity, deck_list, land_set):
             while lands_left:
                 if lands_left == 0:
                     break
-                lands = Card.where(types="Land", colorIdentity=color, set=land_set, name="Island").all()
+                lands = Card.where(
+                    types="Land", colorIdentity=color, set=land_set, name="Island"
+                ).all()
                 for land in lands:
                     deck_list.append(land)
                     lands_left -= 1
@@ -146,7 +168,9 @@ def top_up_basics(num_cards, color_identity, deck_list, land_set):
             while lands_left:
                 if lands_left == 0:
                     break
-                lands = Card.where(types="Land", colorIdentity=color, set=land_set, name="Plain").all()
+                lands = Card.where(
+                    types="Land", colorIdentity=color, set=land_set, name="Plain"
+                ).all()
                 for land in lands:
                     deck_list.append(land)
                     lands_left -= 1
@@ -158,7 +182,9 @@ def top_up_basics(num_cards, color_identity, deck_list, land_set):
             while lands_left:
                 if lands_left == 0:
                     break
-                lands = Card.where(types="Land", colorIdentity=color, set=land_set, name="Swamp").all()
+                lands = Card.where(
+                    types="Land", colorIdentity=color, set=land_set, name="Swamp"
+                ).all()
                 for land in lands:
                     deck_list.append(land)
                     lands_left -= 1
@@ -170,7 +196,9 @@ def top_up_basics(num_cards, color_identity, deck_list, land_set):
             while lands_left:
                 if lands_left == 0:
                     break
-                lands = Card.where(types="Land", colorIdentity=color, set=land_set, name="Mountain").all()
+                lands = Card.where(
+                    types="Land", colorIdentity=color, set=land_set, name="Mountain"
+                ).all()
                 for land in lands:
                     deck_list.append(land)
                     lands_left -= 1
@@ -182,7 +210,9 @@ def top_up_basics(num_cards, color_identity, deck_list, land_set):
             while lands_left:
                 if lands_left == 0:
                     break
-                lands = Card.where(types="Land", colorIdentity=color, set=land_set, name="Forest").all()
+                lands = Card.where(
+                    types="Land", colorIdentity=color, set=land_set, name="Forest"
+                ).all()
                 for land in lands:
                     deck_list.append(land)
                     lands_left -= 1
