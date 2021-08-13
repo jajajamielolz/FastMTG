@@ -23,3 +23,6 @@ reorder-python-imports
 python-dotenv==0.14.0
 pytest~=6.0.1
 pre-commit==2.9.2
+
+# sqlalchemy
+sqlalchemy-utc==0.12.0
