@@ -6,8 +6,8 @@ for interactive swagger docs go to http://localhost:8000/docs
 
 
 ### Formatting
-flake8, black, and reorder python imports are used for formatting, set up pre-commit hooks with `./venv/bin/pre-commit install`
-and run reformatting with `./venv/bin/pre-commit run --all-files`
+flake8, black, and reorder python imports are used for formatting, set up pre-commit hooks with `pre-commit install`
+and run reformatting with `pre-commit run --all-files`
 
 ### Alembic & SQLite3
 This repo is using alembic to handle schema migrations and using SQLite3 for a database. To initialize your local db run `alembic upgrade head`
