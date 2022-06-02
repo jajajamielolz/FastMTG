@@ -1,3 +1,7 @@
+No longer being maintained - initial project to learn Fast API
+goal of the app is to archive a collection of magic the gathering cards, and use `mtgsdk` to build a 99 card commander decks around an initial commander card. 
+
+
 # Fast_Blocksci
 Fast API app to query mtg stuff
 
